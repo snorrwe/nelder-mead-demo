@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def nm_step(f, vertices, alpha, gamma, phi, sigma):
@@ -53,10 +54,37 @@ global_min = (a, a**2)
 
 
 vertices = [
-    np.array([1000, 100]),
-    np.array([2000, 200]),
-    np.array([1000, 200]),
+    np.array([10, 12]),
+    np.array([20, 22]),
+    np.array([10, 22]),
 ]
+
+
+estimates = []
+
 for _ in range(150):
     vertices = nm_step(lambda p: rosenbrock(p[0], p[1]), vertices, 1, 2, 0.5, 0.5)
-    print(vertices[0], np.linalg.norm(vertices[0] - global_min))
+    estimates.append(vertices[0])
+print(vertices[0], np.linalg.norm(vertices[0] - global_min))
+
+plt.axis("off")
+plt.title(f"Optimizing the Rosenbrock function with a={a} b={b}")
+plt.subplot(1, 2, 1)
+plt.scatter(
+    list(range(len(estimates))),
+    list(v[0] for v in estimates),
+    s=5,
+)
+plt.hlines(global_min[0], 0, len(estimates), colors="red")
+plt.legend(["x", "min"])
+plt.xlabel("t")
+plt.subplot(1, 2, 2)
+plt.scatter(
+    list(range(len(estimates))),
+    list(v[1] for v in estimates),
+    s=5,
+)
+plt.hlines(global_min[1], 0, len(estimates), colors="red")
+plt.legend(["y", "min"])
+plt.xlabel("t")
+plt.savefig("docs/rosenbrock.png")
